@@ -84,8 +84,28 @@ public class Request extends HttpServlet {
                 regResp.put("data", registrationResp);
                 regResp.put("status", rs.get("status"));
                 regResp.toString();
-                out.println(regResp.toString());
-            }   else {
+                out.println(regResp.toString()); 
+            }  
+            else if(requestType.equals("apply loan")){
+             String nationalID = requestMap.get("NationalID");
+                String LoanAmount = requestMap.get("LoanAmount");
+                String PhoneNumber = requestMap.get("PhoneNumber");
+                Map<String, String> rs = db.Loan( LoanAmount, PhoneNumber, nationalID);
+                org.json.JSONObject regResp = new org.json.JSONObject();
+                org.json.JSONObject registrationResp = new org.json.JSONObject(message);
+                obj.put("status", rs.get("status"));
+                registrationResp.put("message", rs.get("message"));
+                regResp.put("data", registrationResp);
+                regResp.put("status", rs.get("status"));
+                regResp.toString();
+                out.println(regResp.toString()); 
+            }
+            
+            
+            
+            
+            
+            else {
                 org.json.JSONObject invaResp = new org.json.JSONObject();
                 org.json.JSONObject invalidResp = new org.json.JSONObject(message);
                  invaResp.put("status", "0");
