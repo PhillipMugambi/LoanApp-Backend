@@ -5,12 +5,17 @@
  */
 package DB;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -176,5 +181,30 @@ Map<String, String> respMap = new HashMap<>();
         }
         return respMap;
     }
+    
+    public JSONArray Mystatement() throws SQLException  {
 
+        JSONArray dataResponse = new JSONArray();
+        String sql = "SELECT * from  tbtransactions";
+        Connection connection= DBconnection.Connect();
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.executeQuery();
+        try (final ResultSet rs = ps.getResultSet()) {
+            while (rs.next()) {
+                JSONObject singleData = new JSONObject();
+                singleData.put("id", rs.getString("id").trim());
+                singleData.put("LoanAccount", rs.getString("LoanAccount").trim());
+                singleData.put("LoanAmount", rs.getString("LoanAmount").trim());
+                singleData.put("AmountPaid", rs.getString("AmountPaid").trim());
+                singleData.put("TransactionDate", rs.getString("TransactionDate").trim());
+                dataResponse.put(singleData);
+
+            }
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+        }
+        return dataResponse;
+    
+    }
 }

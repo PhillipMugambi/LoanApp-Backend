@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import DB.DBFunctions;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONArray;
 
 /**
  *
@@ -39,7 +43,7 @@ public class Request extends HttpServlet {
         //  response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
         response.setContentType("application/json");
-
+DBFunctions db = new DBFunctions();
         try {
             StringBuilder jb = new StringBuilder();
             String line;
@@ -52,7 +56,7 @@ public class Request extends HttpServlet {
             org.json.JSONObject obj = new org.json.JSONObject(message);
             Map<String, String> requestMap = new HashMap<>();
             requestMap = (new Utilities()).parseJSON(obj, requestMap);
-            DBFunctions db = new DBFunctions();
+            
 
             //get Request Type
             String requestType = requestMap.get("service");
@@ -85,7 +89,21 @@ public class Request extends HttpServlet {
                 regResp.put("status", rs.get("status"));
                 regResp.toString();
                 out.println(regResp.toString()); 
-            }  
+            } 
+             else if(requestType.equals("statement")){
+                JSONArray rs = db.Mystatement();
+                org.json.JSONObject viewResp = new org.json.JSONObject();
+                org.json.JSONObject logResp = new org.json.JSONObject(message);
+
+                viewResp.put("data", rs);
+//                viewResp.toString();
+//                 out.println(viewResp.toString());
+                
+
+                out.println(viewResp);
+                
+                }
+            
             else if(requestType.equals("apply loan")){
              String nationalID = requestMap.get("NationalID");
                 String LoanAmount = requestMap.get("LoanAmount");
@@ -115,10 +133,12 @@ public class Request extends HttpServlet {
                 out.println(invaResp.toString());
             }
 
+        } catch (SQLException ex) {
+            Logger.getLogger(Request.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             out.close();
         }
-
+      
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
