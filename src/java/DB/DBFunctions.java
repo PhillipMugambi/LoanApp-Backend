@@ -123,6 +123,21 @@ Map<String, String> respMap = new HashMap<>();
         }
         return respMap;
     }
+    
+     public Map<String, String>PayLoan(String Amount,String PhoneNumber) {
+Map<String, String> respMap = new HashMap<>();
+ String sql = "update tbtransactions set AmountPaid=?  WHERE PhoneNumber=?";
+         try (Connection connection = DBconnection.Connect();
+                PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, Amount);
+            ps.execute();
+            respMap.put("message", "Loan Payed Successfully ");
+             respMap.put("status", "1");
+        } catch (Exception ex) {
+            // log
+        }
+         return respMap;
+     }
 
     private void insertToCustomer(int nationalID, String firstName, String lastName,
             String phonenumber, String uuid, int pin) {

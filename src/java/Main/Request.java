@@ -74,7 +74,8 @@ DBFunctions db = new DBFunctions();
 
                 logResp.toString();
                 out.println(logResp.toString());
-            } else if (requestType.equals("registration")) {
+            }
+            else if (requestType.equals("registration")) {
                 //int nationaID = Integer.parseInt(requestMap.get("NationalID"));
                 String firstName = requestMap.get("firstName");
                 String lastName = requestMap.get("lastName");
@@ -89,7 +90,8 @@ DBFunctions db = new DBFunctions();
                 regResp.put("status", rs.get("status"));
                 regResp.toString();
                 out.println(regResp.toString()); 
-            } 
+            }
+           
              else if(requestType.equals("statement")){
                 JSONArray rs = db.Mystatement();
                 org.json.JSONObject viewResp = new org.json.JSONObject();
@@ -121,7 +123,19 @@ DBFunctions db = new DBFunctions();
             
             
             
-            
+            else if(requestType.equals("apply loan")){
+                String LoanAmount = requestMap.get("LoanAmount");
+                String PhoneNumber = requestMap.get("PhoneNumber");
+                Map<String, String> rs = db.PayLoan( LoanAmount, PhoneNumber);
+                org.json.JSONObject regResp = new org.json.JSONObject();
+                org.json.JSONObject registrationResp = new org.json.JSONObject(message);
+                obj.put("status", rs.get("status"));
+                registrationResp.put("message", rs.get("message"));
+                regResp.put("data", registrationResp);
+                regResp.put("status", rs.get("status"));
+                regResp.toString();
+                out.println(regResp.toString()); 
+            }
             
             else {
                 org.json.JSONObject invaResp = new org.json.JSONObject();
